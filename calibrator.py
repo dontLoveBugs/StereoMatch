@@ -52,15 +52,15 @@ class Calibrator(object):
         self.stereo_camera_params = None
 
     def calibrate(self):
-        left_images, right_images = [], []
+        imgLL, imgRL = [], []
         for name in glob.glob(self.images_dir + "/left*"):
-            left_images.append(name)
+            imgLL.append(name)
         for name in glob.glob(self.images_dir + "/right*"):
-            right_images.append(name)
+            imgRL.append(name)
 
-        assert len(left_images) == len(right_images), "Number of the left images must be same with the right ones."
-        left_images.sort()
-        right_images.sort()
+        assert len(imgLL) == len(imgRL), "Number of the left images must be same with the right ones."
+        imgLL.sort()
+        imgRL.sort()
 
         # keypoints params
         scales = [1, 2]
@@ -71,33 +71,33 @@ class Calibrator(object):
         good_image_pairs = []
         image_points = [[], []]
         image_shape = None
-        for i in range(len(left_images)):
-            left_image = cv2.imread(left_images[i], 0)
+        for i in range(len(imgLL)):
+            imgL = cv2.imread(imgLL[i], 0)
             if image_shape is None:
-                image_shape = left_image.shape
+                image_shape = imgL.shape
             else:
-                if image_shape != left_image.shape:
+                if image_shape != imgL.shape:
                     print("the shape of left image {} is {}, not same with {}.".format(
-                        i, left_image.shape, image_shape))
+                        i, imgL.shape, image_shape))
                     continue
-            left_corners = findCornerMultiScale(left_image, self.border_size, scales)
-            if left_corners is None: continue
+            cornersL = findCornerMultiScale(imgL, self.border_size, scales)
+            if cornersL is None: continue
 
-            right_image = cv2.imread(right_images[i], 0)
+            imgR = cv2.imread(imgRL[i], 0)
             if image_shape is None:
-                image_shape = right_image.shape
+                image_shape = imgR.shape
             else:
-                if image_shape != right_image.shape:
+                if image_shape != imgR.shape:
                     print("the shape of left image {} is {}, not same with {}.".format(
-                        i, right_image.shape, image_shape))
+                        i, imgR.shape, image_shape))
                     continue
 
-            right_corners = findCornerMultiScale(right_image, self.border_size, scales)
-            if right_corners is None: continue
+            cornersR = findCornerMultiScale(imgR, self.border_size, scales)
+            if cornersR is None: continue
 
-            good_image_pairs.append([left_image, right_image])
-            image_points[0].append(left_corners)
-            image_points[1].append(right_corners)
+            good_image_pairs.append([imgL, imgR])
+            image_points[0].append(cornersL)
+            image_points[1].append(cornersR)
 
         n_image_pairs = len(good_image_pairs)
         assert n_image_pairs > 1, "Error: number of image pairs is {}, " \

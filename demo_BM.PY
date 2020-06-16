@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time    : 2020/6/15 23:06
-# @Author  : YueJIang.WX
-# @Email   : yuejiang.wx@antfin.com
+# @Author  : Wang Xin
+# @Email   : wangxin_buaa@163.com
 # @File    : demo_BM.PY
 
 import cv2
